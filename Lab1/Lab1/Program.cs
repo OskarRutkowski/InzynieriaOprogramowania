@@ -74,7 +74,6 @@ namespace Lab1
             //+zad3
             writeConsoleMessage(new ASCIIEncoding().GetString(buffer), ConsoleColor.Green);
             client.GetStream().Write(buffer, 0, buffer.Length);
-            Thread.Sleep(1000);
             client.Close();
         }
         static void zadanie2()
@@ -101,24 +100,13 @@ namespace Lab1
             //Zamek czeka, az polaczenie zostanie calkowicie wykonane
             zadanie3();
         }
-        static void Sum(Object stateInfo)
+        static void zadanie5()
         {
-            var table = ((object[])stateInfo)[0];
-            
-        }
-        static void zadanie5(int length,int piece)
-        {
-            List<int> integers = new List<int>(length);
-            Random rand = new Random();
-            for(int x=0;x<length;x++ )
-            {
-                integers.Add(rand.Next(1, 99));
-            }
-            ThreadPool.QueueUserWorkItem( Sum,new object[] { integers,  piece });
+
         }
         static void Main(string[] args)
         {
-            zadanie5(6,3);
+            zadanie3();
             Console.ReadKey();
                 
         }
