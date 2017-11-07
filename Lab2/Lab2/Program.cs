@@ -19,11 +19,13 @@ namespace Lab2
 
             Console.WriteLine(nazwa.GetString(message));
 
-            
+            FileStream newFS = (FileStream)((object[])incoming)[1];
+           
             autoResetEvent[0].Set();
+            newFS.Close();
         }
         static AutoResetEvent[] autoResetEvent;
-        static void zadanie1()
+        static void zadanie6()
         {
             string path = "test.txt";
 
@@ -37,8 +39,22 @@ namespace Lab2
             autoResetEvent[0] = new AutoResetEvent(false);
 
             WaitHandle.WaitAll(autoResetEvent);
-
+            //watek glowny czeka na zakonczenie operacji czytania
+            //watek glowny nie czeka na callback
             Thread.Sleep(3000);
+        }
+        static void zadanie7()
+        {
+            string path = "test.txt";
+
+            FileStream fs = new FileStream(path, FileMode.Open);
+            byte[] b = new byte[1024];
+            var result = fs.BeginRead(b, 0, b.Length, null, null);
+            fs.EndRead(result);
+            ASCIIEncoding nazwa = new ASCIIEncoding();
+            Console.WriteLine(nazwa.GetString(b));
+            fs.Close();
+            Thread.Sleep(4000);
         }
         delegate int DelegateType(object arguments);
         static DelegateType delegatename;
@@ -68,15 +84,31 @@ namespace Lab2
             else
                 return fibRe(n - 1) + fibRe(n - 2);
         }
-        static void Main(string[] args)
+        static void zadanie8()
         {
             delegatename = new DelegateType(silniaIt);
-            int result = delegatename.Invoke(8);
+            IAsyncResult ar = delegatename.BeginInvoke(20, null, null);
+            int result = delegatename.EndInvoke(ar);
+
             delegatename = new DelegateType(silniaRe);
-            int result2 = delegatename.Invoke(5);
-            Console.WriteLine("Silnia1: "+result);
-            Console.WriteLine("Silnia2: "+result2);
+            IAsyncResult ar2 = delegatename.BeginInvoke(8, null, null);
+            int result2 = delegatename.EndInvoke(ar2);
+
+            delegatename = new DelegateType(fibRe);
+            IAsyncResult ar3 = delegatename.BeginInvoke(8, null, null);
+            int result3 = delegatename.EndInvoke(ar3);
+
+            Console.WriteLine("Silnia1: " + result);
+            Console.WriteLine("Silnia2: " + result2);
+            Console.WriteLine("Fibbonaci: " + result3);
             Console.ReadKey();
+        }
+        static void Main(string[] args)
+        {
+            //zadanie6();
+            zadanie7();
+            //zadanie8();
+            /**/
         }
     }
 }
